@@ -10,333 +10,11 @@
       border-color: #ff0055 !important;
       box-shadow: 0 0 0 2px rgba(255, 0, 85, 0.2) !important;
     }
-
-    /* --- LOADING CAT CSS --- */
-    @keyframes rotating {
-      0% { transform: rotate(45deg); }
-      10% { transform: rotate(45deg); }
-      100% { transform: rotate(765deg); }
-    }
-
-    @keyframes rotating-ass {
-      0% { transform: rotate(-65deg); }
-      90% { transform: rotate(655deg); }
-      100% { transform: rotate(655deg); }
-    }
-
-    @keyframes mouth {
-      0%, 16%, 100% { height: 0px; }
-      30%, 50% { height: 2px; }
-    }
-
-    #cat-loader-container {
-      display: none; /* Hidden by default */
-      position: fixed;
-      inset: 0;
-      background-color: #000000;
-      align-items: center;
-      justify-content: center;
-      z-index: 50;
-    }
-
-    #cat-loader-container.active {
-      display: flex; /* Shown when active class is added */
-    }
-
-    #wrapper {
-      position: relative;
-      width: 300px;
-      height: 300px;
-      padding: 50px;
-      background: #000000;
-    }
-
-    #cat-mask {
-      position: relative;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 250px;
-      height: 250px;
-      border-radius: 50%;
-    }
-
-    #cat {
-      position: relative;
-      width: 250px;
-      height: 250px;
-      border: 5px solid #000000;
-      border-radius: 50%;
-    }
-
-    #cat .shape-mask {
-      position: absolute;
-      width: 270px;
-      height: 135px;
-      top: -10px;
-      left: -10px;
-      border-radius: 135px 135px 0 0;
-      background: #000000;
-      transform-origin: center bottom;
-      transform: rotate(-65deg);
-      animation: rotating-ass 2.79s linear reverse infinite;
-    }
-
-    #cat .shape-mask.second {
-      transform: rotate(45deg);
-      animation: rotating 2.79s linear reverse infinite;
-    }
-
-    #cat .body-up, #cat .body-down {
-      width: 250px;
-      height: 125px;
-      border-radius: 125px 125px 0 0;
-      background: #ffffff;
-    }
-
-    #cat .body-down {
-      transform: rotate(180deg);
-    }
-
-    #cat .body-inside {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 220px;
-      height: 220px;
-      border-radius: 50%;
-      background: #000000;
-    }
-
-    #cat .body-inside-wrapper {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      transform: rotate(-65deg);
-      animation: rotating-ass 2.79s linear reverse infinite;
-    }
-
-    #cat .body-inside-wrapper-end {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      transform: rotate(45deg);
-      animation: rotating 2.79s linear reverse infinite;
-    }
-
-    #cat .body-inside-fix {
-      position: absolute;
-      top: 50%; left: 10px;
-      width: 50px; height: 50px;
-      transform: translateY(-50%);
-      background: #ffffff;
-    }
-
-    #cat .body-inside-fix.end {
-      left: auto; right: 10px;
-    }
-
-    #cat .body-inside-fix:after {
-      content: " ";
-      position: absolute;
-      top: 36px; left: 9px;
-      display: block;
-      width: 25px; height: 25px;
-      border-radius: 50%;
-      background: #000000;
-    }
-
-    #cat .body-inside-fix.end:after {
-      left: auto; right: 9px;
-    }
-
-    #cat .body-mask {
-      position: absolute;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      width: 170px; height: 170px;
-      border-radius: 50%;
-      background: #ffffff;
-    }
-
-    #cat .cat-head-wrapper {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      transform: rotate(45deg);
-      animation: rotating 2.79s linear reverse infinite;
-    }
-
-    #cat .cat-head {
-      position: absolute;
-      top: 91px; right: -5px;
-      width: 55px; height: 30px;
-      border: 5px solid #000000;
-      border-bottom: none;
-      border-radius: 5px 5px 0 0;
-      background: #ffffff;
-    }
-
-    #cat .cat-ear {
-      position: absolute;
-      top: 81px; right: 43px;
-      width: 7px; height: 10px;
-      border: 5px solid #000000;
-      border-bottom: none;
-      border-radius: 5px 20px 0 0;
-      background: #ffffff;
-    }
-
-    #cat .cat-ear.right {
-      right: -5px;
-      border-radius: 20px 5px 0 0;
-    }
-
-    #cat .cat-eye {
-      position: absolute;
-      top: 10px; left: 11px;
-      width: 5px; height: 6px;
-      border-radius: 50%;
-      background: #000000;
-    }
-
-    #cat .cat-eye.right {
-      left: 39px;
-    }
-
-    #cat .cat-mouth-wrapper {
-      position: absolute;
-      top: 23px; left: 23px;
-    }
-
-    #cat .cat-mouth {
-      position: absolute;
-      top: 0px; left: 2px;
-      width: 2px; height: 3px;
-      border: 2px solid #000000;
-      border-top: none;
-      border-radius: 0 0 5px 5px;
-      animation: mouth 2.79s linear reverse infinite;
-    }
-
-    #cat .cat-mouth-up {
-      position: absolute;
-      top: -3px; left: 0;
-      width: 1px; height: 2px;
-      border: 2px solid #000000;
-      border-top: none;
-      border-radius: 0 0 5px 5px;
-    }
-
-    #cat .cat-mouth-up.right {
-      left: 5px;
-    }
-
-    #cat .cat-beard {
-      position: absolute;
-      top: 0; left: -33px;
-      height: 1px; width: 15px;
-      border-top: 2px solid #000000;
-      border-radius: 15px;
-      background: black;
-    }
-
-    #cat .cat-beard.right {
-      left: auto; right: -43px;
-    }
-
-    #cat .cat-beard.up {
-      top: -5px;
-      transform: rotate(5deg);
-    }
-
-    #cat .cat-beard.up.right {
-      transform: rotate(-5deg);
-    }
-
-    #cat .cat-beard.down {
-      top: 5px;
-      transform: rotate(-5deg);
-    }
-
-    #cat .cat-beard.down.right {
-      transform: rotate(5deg);
-    }
-
-    #cat .cat-hand {
-      position: absolute;
-      top: 155px; right: 5px;
-      width: 13px; height: 30px;
-      transform: rotate(21deg);
-      border: 5px solid #000000;
-      border-top: none;
-      border-radius: 0 5px 15px 15px;
-      background: #ffffff;
-    }
-
-    #cat .cat-hand.right {
-      top: 140px; right: 45px;
-    }
-
-    #cat .cat-ass-wrapper {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      transform: rotate(-65deg);
-      animation: rotating-ass 2.79s linear reverse infinite;
-    }
-
-    #cat .cat-leg {
-      position: absolute;
-      top: 95px; left: -5px;
-      width: 13px; height: 30px;
-      border: 5px solid #000000;
-      border-bottom: none;
-      border-radius: 15px 15px 0 0;
-      background: #ffffff;
-    }
-
-    #cat .cat-leg.right {
-      left: auto; right: 190px;
-    }
-
-    #cat .cat-ass {
-      position: absolute;
-      top: 115px; left: 13px;
-      width: 18px; height: 5px;
-      border: 5px solid #000000;
-      border-bottom: none;
-      border-radius: 30px 30px 0 0;
-      background: #ffffff;
-    }
-
-    #cat .cat-tail {
-      position: absolute;
-      top: 75px; left: 17px;
-      width: 12px; height: 40px;
-      border: 5px solid #000000;
-      border-bottom: none;
-      border-radius: 20px 20px 0 0;
-      background: #ffffff;
-    }
-
-    #cat .inner-mask {
-      position: absolute;
-      box-sizing: border-box;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      width: 140px; height: 140px;
-      border: 5px solid #000000;
-      border-radius: 50%;
-      background: #000000;
-    }
   </style>
 </head>
 <body class="bg-black text-gray-100 min-h-screen flex items-center justify-center p-4">
 
-  <!-- Main Form Container -->
-  <div id="form-container" class="w-full max-w-md bg-black p-8 rounded-2xl">
+  <div class="w-full max-w-md bg-black p-8 rounded-2xl">
     
     <h1 class="text-2xl font-bold text-white text-center mb-8">
       Wallet ID Badge
@@ -399,43 +77,48 @@
 
     </form>
 
+    <div id="success_message" class="hidden mt-6 p-4 rounded-lg bg-neutral-900 border border-neutral-800 text-center">
+      <p class="text-sm font-medium text-white">Submitted successfully!</p>
+    </div>
+
   </div>
 
-  <!-- Loading Cat Container -->
-  <div id="cat-loader-container">
-    <div id="wrapper">
-      <div id="cat-mask">
-        <div id="cat">
-          <div class="body-up"></div>
-          <div class="body-down"></div>
-          <div class="body-inside"></div>
-          <div class="body-mask"></div>
-          <div class="body-inside-wrapper">
-            <div class="body-inside-fix"></div>
-          </div>
-          <div class="body-inside-wrapper-end">
-            <div class="body-inside-fix end"></div>
-          </div>
-          <div class="inner-mask"></div>
+  <script>
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwcRk8T4hQ2g-RAeuSRiy4GoNHlbGesJ9sU8jaZCioMnT4ITITdNC6sYM6f-zBGy62B/exec';
 
-          <div class="shape-mask"></div>
-          <div class="shape-mask second"></div>
-          <div class="cat-ass-wrapper">
-            <div class="cat-tail"></div>
-            <div class="cat-ass"></div>
-            <div class="cat-leg"></div>
-            <div class="cat-leg right"></div>
-          </div>
-          <div class="cat-head-wrapper">
-            <div class="cat-head">
-              <div class="cat-eye"></div>
-              <div class="cat-eye right"></div>
-              <div class="cat-mouth-wrapper">
-                <div class="cat-mouth"></div>
-                <div class="cat-mouth-up"></div>
-                <div class="cat-mouth-up right"></div>
-                <div class="cat-beard up"></div>
-                <div class="cat-beard"></div>
-                <div class="cat-beard down"></div>
-                <div class="cat-beard right up"></div>
-                <div
+    document.getElementById('badgeForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const submitBtn = document.getElementById('submitBtn');
+      const successMsg = document.getElementById('success_message');
+      
+      submitBtn.disabled = true;
+      submitBtn.innerText = 'Submitting...';
+
+      const formData = new FormData(this);
+
+      fetch(SCRIPT_URL, {
+        method: 'POST',
+        body: formData,
+        mode: 'no-cors'
+      })
+      .then(() => {
+        successMsg.classList.remove('hidden');
+        this.reset();
+        submitBtn.disabled = false;
+        submitBtn.innerText = 'Submit';
+        
+        setTimeout(() => {
+          successMsg.classList.add('hidden');
+        }, 4000);
+      })
+      .catch(error => {
+        alert('Submission failed. Please try again.');
+        submitBtn.disabled = false;
+        submitBtn.innerText = 'Submit';
+      });
+    });
+  </script>
+
+</body>
+</html>
