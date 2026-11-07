@@ -331,7 +331,7 @@
 </head>
 <body class="bg-black text-gray-100 min-h-screen flex items-center justify-center p-4">
 
-  <!-- Main Container -->
+  <!-- Main Form Container -->
   <div id="form-container" class="w-full max-w-md bg-black p-8 rounded-2xl">
     
     <h1 class="text-2xl font-bold text-white text-center mb-8">
@@ -397,7 +397,7 @@
 
   </div>
 
-  <!-- Hidden Loading Cat Container -->
+  <!-- Loading Cat Container (Hidden by default) -->
   <div id="cat-loader-container" class="hidden">
     <div id="wrapper">
       <div id="cat-mask">
@@ -448,6 +448,15 @@
     </div>
   </div>
 
+  <!-- Success Message Container (Hidden by default) -->
+  <div id="success-container" class="hidden w-full max-w-md bg-black p-8 rounded-2xl text-center space-y-4">
+    <div class="w-12 h-12 mx-auto rounded-full flex items-center justify-center" style="background-color: rgba(255, 0, 85, 0.1); color: #ff0055;">
+      ✓
+    </div>
+    <h2 class="text-xl font-bold text-white">Submitted Successfully!</h2>
+    <p class="text-sm text-neutral-400">Your badge is being processed.</p>
+  </div>
+
   <script>
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwcRk8T4hQ2g-RAeuSRiy4GoNHlbGesJ9sU8jaZCioMnT4ITITdNC6sYM6f-zBGy62B/exec';
 
@@ -456,6 +465,7 @@
       
       const formContainer = document.getElementById('form-container');
       const catLoader = document.getElementById('cat-loader-container');
+      const successContainer = document.getElementById('success-container');
       
       // Hide form and show loading cat
       formContainer.classList.add('hidden');
@@ -469,8 +479,11 @@
         mode: 'no-cors'
       })
       .then(() => {
-        // Keeps cat spinning after submit; form stays hidden
-        this.reset();
+        // Keep cat spinning for 2 seconds, then show success screen
+        setTimeout(() => {
+          catLoader.classList.add('hidden');
+          successContainer.classList.remove('hidden');
+        }, 2000);
       })
       .catch(error => {
         alert('Submission failed. Please try again.');
