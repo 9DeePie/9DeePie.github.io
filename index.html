@@ -6,7 +6,6 @@
   <title>Wallet ID Badge</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    /* Custom focus state using accent color #ff0055 */
     .focus-accent:focus {
       border-color: #ff0055 !important;
       box-shadow: 0 0 0 2px rgba(255, 0, 85, 0.2) !important;
@@ -15,25 +14,14 @@
 </head>
 <body class="bg-black text-gray-100 min-h-screen flex items-center justify-center p-4">
 
-  <!-- Main Container -->
   <div class="w-full max-w-md bg-black p-8 rounded-2xl">
     
-    <!-- Title -->
     <h1 class="text-2xl font-bold text-white text-center mb-8">
       Wallet ID Badge
     </h1>
 
-    <!-- Hidden Iframe to prevent page redirection on submit -->
-    <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;" onload="if(submitted) { showConfirmation(); }"></iframe>
+    <form id="badgeForm" class="space-y-6">
 
-    <!-- Form connected directly to your Google Form -->
-    <form action="https://docs.google.com/forms/d/e/1FAIpQLSf7OG6lGVgZIpPmp32LjcBqpgI4YRppI1oZ3ZD8TRCZqS0pGg/formResponse" 
-          method="POST" 
-          target="hidden_iframe" 
-          onsubmit="submitted=true;"
-          class="space-y-6">
-
-      <!-- Field 1: First & Last Name -->
       <div>
         <label for="name" class="block text-sm font-semibold text-white mb-2">
           First & Last Name
@@ -41,14 +29,13 @@
         <input 
           type="text" 
           id="name" 
-          name="entry.1402365521" 
+          name="name" 
           placeholder="Mr Bean" 
           required
           class="w-full bg-neutral-900 border border-neutral-800 rounded-lg px-4 py-3 text-white placeholder-neutral-600 focus:outline-none focus-accent transition-all duration-200 text-sm"
         >
       </div>
 
-      <!-- Field 2: Employee Number -->
       <div>
         <label for="employee_id" class="block text-sm font-semibold text-white mb-2">
           Employee Number
@@ -56,14 +43,13 @@
         <input 
           type="text" 
           id="employee_id" 
-          name="entry.137266959" 
+          name="employee_id" 
           placeholder="1234567" 
           required
           class="w-full bg-neutral-900 border border-neutral-800 rounded-lg px-4 py-3 text-white placeholder-neutral-600 focus:outline-none focus-accent transition-all duration-200 text-sm"
         >
       </div>
 
-      <!-- Field 3: Phone Number -->
       <div>
         <label for="phone" class="block text-sm font-semibold text-white mb-2">
           Phone Number
@@ -71,16 +57,16 @@
         <input 
           type="tel" 
           id="phone" 
-          name="entry.986441466" 
+          name="phone" 
           placeholder="(000) 000 - 0000" 
           required
           class="w-full bg-neutral-900 border border-neutral-800 rounded-lg px-4 py-3 text-white placeholder-neutral-600 focus:outline-none focus-accent transition-all duration-200 text-sm"
         >
       </div>
 
-      <!-- Submit Button -->
       <button 
         type="submit" 
+        id="submitBtn"
         style="background-color: #ff0055;"
         class="w-full text-white font-semibold py-3 px-4 rounded-lg hover:opacity-90 active:scale-[0.99] transition-all duration-200 text-sm shadow-md mt-2"
       >
@@ -89,7 +75,6 @@
 
     </form>
 
-    <!-- Success Message Box -->
     <div id="success_message" class="hidden mt-6 p-4 rounded-lg bg-neutral-900 border border-neutral-800 text-center">
       <p class="text-sm font-medium text-white">Submitted successfully!</p>
     </div>
@@ -97,15 +82,40 @@
   </div>
 
   <script>
-    var submitted = false;
-    function showConfirmation() {
-      const msg = document.getElementById('success_message');
-      msg.classList.remove('hidden');
-      document.querySelector('form').reset();
-      setTimeout(() => {
-        msg.classList.add('hidden');
-      }, 4000);
-    }
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwcRk8T4hQ2g-RAeuSRiy4GoNHlbGesJ9sU8jaZCioMnT4ITITdNC6sYM6f-zBGy62B/exec';
+
+    document.getElementById('badgeForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const submitBtn = document.getElementById('submitBtn');
+      const successMsg = document.getElementById('success_message');
+      
+      submitBtn.disabled = true;
+      submitBtn.innerText = 'Submitting...';
+
+      const formData = new FormData(this);
+
+      fetch(SCRIPT_URL, {
+        method: 'POST',
+        body: formData,
+        mode: 'no-cors'
+      })
+      .then(() => {
+        successMsg.classList.remove('hidden');
+        this.reset();
+        submitBtn.disabled = false;
+        submitBtn.innerText = 'Submit';
+        
+        setTimeout(() => {
+          successMsg.classList.add('hidden');
+        }, 4000);
+      })
+      .catch(error => {
+        alert('Submission failed. Please try again.');
+        submitBtn.disabled = false;
+        submitBtn.innerText = 'Submit';
+      });
+    });
   </script>
 
 </body>
