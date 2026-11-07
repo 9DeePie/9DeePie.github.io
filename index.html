@@ -1,1 +1,185 @@
-<h1>Hello World</h1>
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-950">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wallet ID Badge Form</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Inter Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            accent: {
+              DEFAULT: '#ff0055',
+              hover: '#e6004c',
+              active: '#cc0044',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Focus glow with exact #ff0055 accent color */
+    .input-focus-glow:focus {
+      box-shadow: 0 0 15px 0px rgba(255, 0, 85, 0.3);
+      border-color: #ff0055;
+    }
+  </style>
+</head>
+<body class="h-full bg-black text-slate-100 flex flex-col justify-center items-center px-4 py-8 antialiased selection:bg-[#ff0055] selection:text-white">
+
+  <!-- Main Container -->
+  <main class="w-full max-w-md z-10">
+    <!-- Header -->
+    <div class="text-center mb-8">
+      <h1 class="text-2xl font-bold tracking-tight text-white sm:text-3xl">Wallet ID Badge</h1>
+    </div>
+
+    <!-- Form Card -->
+    <div class="bg-black border-none rounded-2xl p-6 sm:p-8 shadow-2xl">
+      
+      <!-- Hidden iframe for silent submit -->
+      <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;" onload="handleIframeLoad()"></iframe>
+
+      <!-- Form Setup -->
+      <form 
+        id="googleForm"
+        action="https://docs.google.com/forms/d/e/YOUR_FORM_ID_HERE/formResponse" 
+        method="POST" 
+        target="hidden_iframe"
+        onsubmit="handleSubmit(event)"
+        class="space-y-5"
+      >
+        <!-- Input 1: First & Last Name -->
+        <div>
+          <label for="name" class="block text-xs font-semibold uppercase tracking-wider text-white mb-2">
+            First & Last Name <span style="color: #ff0055;">*</span>
+          </label>
+          <div class="relative">
+            <input 
+              type="text" 
+              id="name" 
+              name="entry.1402365521" 
+              required
+              placeholder="Mr Bean"
+              class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-sm text-slate-100 placeholder-zinc-600 focus:outline-none input-focus-glow transition-all duration-200"
+            >
+          </div>
+        </div>
+
+        <!-- Input 2: Employee Number -->
+        <div>
+          <label for="employeeNumber" class="block text-xs font-semibold uppercase tracking-wider text-white mb-2">
+            Employee Number <span style="color: #ff0055;">*</span>
+          </label>
+          <div class="relative">
+            <input 
+              type="text" 
+              id="employeeNumber" 
+              name="entry.137266959" 
+              required
+              placeholder="1234567"
+              class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-sm text-slate-100 placeholder-zinc-600 focus:outline-none input-focus-glow transition-all duration-200"
+            >
+          </div>
+        </div>
+
+        <!-- Input 3: Phone Number -->
+        <div>
+          <label for="phoneNumber" class="block text-xs font-semibold uppercase tracking-wider text-white mb-2">
+            Phone Number <span style="color: #ff0055;">*</span>
+          </label>
+          <div class="relative">
+            <input 
+              type="tel" 
+              id="phoneNumber" 
+              name="entry.986441466" 
+              required
+              placeholder="(000) 000 - 0000"
+              pattern="[\+]?[0-9\s\-\(\)\.]{7,20}"
+              title="Please enter a valid phone number"
+              class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-sm text-slate-100 placeholder-zinc-600 focus:outline-none input-focus-glow transition-all duration-200"
+            >
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <button 
+          type="submit" 
+          id="submitBtn"
+          style="background-color: #ff0055;"
+          class="w-full mt-2 hover:opacity-90 active:scale-[0.99] text-white font-medium text-sm py-3 px-4 rounded-xl transition-all duration-200 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <span id="btnText">Submit</span>
+          <svg id="btnSpinner" class="hidden animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+        </button>
+      </form>
+    </div>
+
+    <!-- Notification / Toast Message -->
+    <div 
+      id="toast" 
+      class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 bg-zinc-900 border border-emerald-500/40 text-emerald-400 px-5 py-3 rounded-xl shadow-xl flex items-center space-x-3 transition-opacity duration-300 z-50"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-emerald-400" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+      </svg>
+      <span class="text-sm font-medium">Form submitted successfully!</span>
+    </div>
+  </main>
+
+  <script>
+    let isSubmitting = false;
+
+    // Handle form submit state
+    function handleSubmit(e) {
+      isSubmitting = true;
+      const btn = document.getElementById('submitBtn');
+      const btnText = document.getElementById('btnText');
+      const btnSpinner = document.getElementById('btnSpinner');
+
+      // Update UI loading state
+      btn.disabled = true;
+      btnText.textContent = 'Submitting...';
+      btnSpinner.classList.remove('hidden');
+    }
+
+    // Handle iframe load trigger (called after target endpoint responds)
+    function handleIframeLoad() {
+      if (!isSubmitting) return; // Ignore initial load
+
+      const form = document.getElementById('googleForm');
+      const btn = document.getElementById('submitBtn');
+      const btnText = document.getElementById('btnText');
+      const btnSpinner = document.getElementById('btnSpinner');
+      const toast = document.getElementById('toast');
+
+      // Reset form and UI state
+      form.reset();
+      isSubmitting = false;
+      btn.disabled = false;
+      btnText.textContent = 'Submit';
+      btnSpinner.classList.add('hidden');
+
+      // Display Toast
+      toast.classList.remove('hidden');
+      setTimeout(() => {
+        toast.classList.add('hidden');
+      }, 4000);
+    }
+  </script>
+</body>
+</html>
