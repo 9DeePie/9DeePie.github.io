@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wallet ID Badge</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .focus-accent:focus {
+      border-color: #ff0055 !important;
+      box-shadow: 0 0 0 2px rgba(255, 0, 85, 0.2) !important;
+    }
+  </style>
+</head>
+<body class="bg-black text-gray-100 min-h-screen flex items-center justify-center p-4">
+
+  <!-- Main Container -->
+  <div class="w-full max-w-md bg-black p-8 rounded-2xl">
+    
+    <h1 id="form-title" class="text-2xl font-bold text-white text-center mb-8">
+      Wallet ID Badge
+    </h1>
+
+    <form id="badgeForm" class="space-y-6">
+
+      <div id="field-name" class="form-field">
+        <label for="name" class="block text-sm font-semibold text-white mb-2">
+          First & Last Name
+        </label>
+        <input 
+          type="text" 
+          id="name" 
+          name="name" 
+          placeholder="Mr Bean" 
+          required
+          class="w-full bg-neutral-900 border border-neutral-800 rounded-lg px-4 py-3 text-white placeholder-neutral-600 focus:outline-none focus-accent transition-all duration-200 text-sm"
+        >
+      </div>
+
+      <div id="field-employee" class="form-field">
+        <label for="employee_id" class="block text-sm font-semibold text-white mb-2">
+          Employee Number
+        </label>
+        <input 
+          type="text" 
+          inputmode="numeric" 
+          pattern="[0-9]*"
+          id="employee_id" 
+          name="employee_id" 
+          placeholder="1234567" 
+          required
+          class="w-full bg-neutral-900 border border-neutral-800 rounded-lg px-4 py-3 text-white placeholder-neutral-600 focus:outline-none focus-accent transition-all duration-200 text-sm"
+        >
+      </div>
+
+      <div id="field-phone" class="form-field">
+        <label for="phone" class="block text-sm font-semibold text-white mb-2">
+          Phone Number
+        </label>
+        <input 
+          type="tel" 
+          id="phone" 
+          name="phone" 
+          placeholder="(000) 000 - 0000" 
+          required
+          class="w-full bg-neutral-900 border border-neutral-800 rounded-lg px-4 py-3 text-white placeholder-neutral-600 focus:outline-none focus-accent transition-all duration-200 text-sm"
+        >
+      </div>
+
+      <!-- Submit Button -->
+      <button 
+        type="submit" 
+        id="submitBtn"
+        style="background-color: #ff0055;"
+        class="w-full text-white font-semibold py-3 px-4 rounded-lg hover:opacity-90 active:scale-[0.99] transition-all duration-200 text-sm shadow-md mt-2"
+      >
+        Submit
+      </button>
+
+    </form>
+
+    <!-- Success Text Display -->
+    <div id="success_message" class="hidden text-center mt-6">
+      <p class="text-xl font-bold text-white tracking-wide">check your text messages</p>
+    </div>
+
+  </div>
+
+  <script>
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwcRk8T4hQ2g-RAeuSRiy4GoNHlbGesJ9sU8jaZCioMnT4ITITdNC6sYM6f-zBGy62B/exec';
+
+    document.getElementById('badgeForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const submitBtn = document.getElementById('submitBtn');
+      const formTitle = document.getElementById('form-title');
+      const successMsg = document.getElementById('success_message');
+      
+      // Hide title and all input fields, keep only the button
+      formTitle.classList.add('hidden');
+      document.querySelectorAll('.form-field').forEach(el => el.classList.add('hidden'));
+
+      // Change button state to Loading
+      submitBtn.disabled = true;
+      submitBtn.innerText = 'Loading...';
+
+      const formData = new FormData(this);
+
+      fetch(SCRIPT_URL, {
+        method: 'POST',
+        body: formData,
+        mode: 'no-cors'
+      })
+      .then(() => {
+        // Change button to Done and show instruction text
+        submitBtn.innerText = 'Done';
+        submitBtn.style.backgroundColor = '#22c55e'; // Optional: turns button green on success
+        successMsg.classList.remove('hidden');
+        this.reset();
+      })
+      .catch(error => {
+        alert('Submission failed. Please try again.');
+        submitBtn.disabled = false;
+        submitBtn.innerText = 'Submit';
+        formTitle.classList.remove('hidden');
+        document.querySelectorAll('.form-field').forEach(el => el.classList.remove('hidden'));
+      });
+    });
+  </script>
+
+</body>
+</html>
