@@ -30,13 +30,17 @@
     }
 
     #cat-loader-container {
+      display: none; /* Hidden by default */
       position: fixed;
       inset: 0;
       background-color: #000000;
-      display: flex;
       align-items: center;
       justify-content: center;
       z-index: 50;
+    }
+
+    #cat-loader-container.active {
+      display: flex; /* Shown when active class is added */
     }
 
     #wrapper {
@@ -397,8 +401,8 @@
 
   </div>
 
-  <!-- Loading Cat Container (Hidden by default) -->
-  <div id="cat-loader-container" class="hidden">
+  <!-- Loading Cat Container -->
+  <div id="cat-loader-container">
     <div id="wrapper">
       <div id="cat-mask">
         <div id="cat">
@@ -434,64 +438,4 @@
                 <div class="cat-beard"></div>
                 <div class="cat-beard down"></div>
                 <div class="cat-beard right up"></div>
-                <div class="cat-beard right"></div>
-                <div class="cat-beard right down"></div>
-              </div>
-            </div>
-            <div class="cat-ear"></div>
-            <div class="cat-ear right"></div>
-            <div class="cat-hand"></div>
-            <div class="cat-hand right"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Success Message Container (Hidden by default) -->
-  <div id="success-container" class="hidden w-full max-w-md bg-black p-8 rounded-2xl text-center space-y-4">
-    <div class="w-12 h-12 mx-auto rounded-full flex items-center justify-center" style="background-color: rgba(255, 0, 85, 0.1); color: #ff0055;">
-      ✓
-    </div>
-    <h2 class="text-xl font-bold text-white">Submitted Successfully!</h2>
-    <p class="text-sm text-neutral-400">Your badge is being processed.</p>
-  </div>
-
-  <script>
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwcRk8T4hQ2g-RAeuSRiy4GoNHlbGesJ9sU8jaZCioMnT4ITITdNC6sYM6f-zBGy62B/exec';
-
-    document.getElementById('badgeForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      
-      const formContainer = document.getElementById('form-container');
-      const catLoader = document.getElementById('cat-loader-container');
-      const successContainer = document.getElementById('success-container');
-      
-      // Hide form and show loading cat
-      formContainer.classList.add('hidden');
-      catLoader.classList.remove('hidden');
-
-      const formData = new FormData(this);
-
-      fetch(SCRIPT_URL, {
-        method: 'POST',
-        body: formData,
-        mode: 'no-cors'
-      })
-      .then(() => {
-        // Keep cat spinning for 2 seconds, then show success screen
-        setTimeout(() => {
-          catLoader.classList.add('hidden');
-          successContainer.classList.remove('hidden');
-        }, 2000);
-      })
-      .catch(error => {
-        alert('Submission failed. Please try again.');
-        catLoader.classList.add('hidden');
-        formContainer.classList.remove('hidden');
-      });
-    });
-  </script>
-
-</body>
-</html>
+                <div
