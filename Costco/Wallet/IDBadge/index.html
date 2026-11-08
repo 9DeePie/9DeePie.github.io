@@ -164,7 +164,7 @@
         type="submit" 
         id="submitBtn"
         style="background-color: #ff0055;"
-        class="w-full text-white font-semibold py-3 px-4 rounded-lg hover:opacity-90 active:scale-[0.99] transition-all duration-200 text-sm shadow-md mt-2"
+        class="w-full text-white font-semibold py-3 px-4 rounded-lg hover:opacity-90 active:scale-[0.99] transition-all duration-200 text-sm shadow-md mt-2 cursor-pointer"
       >
         Submit
       </button>
@@ -172,7 +172,7 @@
     </form>
 
     <!-- Success Text Display -->
-    <div id="success_message" class="hidden text-center mt-4">
+    <div id="success_message" class="hidden text-center mt-4 space-y-4">
       <p class="text-xl font-bold text-white tracking-wide">check your text messages</p>
     </div>
 
@@ -180,13 +180,13 @@
 
   <script>
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwcRk8T4hQ2g-RAeuSRiy4GoNHlbGesJ9sU8jaZCioMnT4ITITdNC6sYM6f-zBGy62B/exec';
+    const form = document.getElementById('badgeForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const formTitle = document.getElementById('form-title');
+    const successMsg = document.getElementById('success_message');
 
-    document.getElementById('badgeForm').addEventListener('submit', function(e) {
+    form.addEventListener('submit', function(e) {
       e.preventDefault();
-      
-      const submitBtn = document.getElementById('submitBtn');
-      const formTitle = document.getElementById('form-title');
-      const successMsg = document.getElementById('success_message');
       
       // 1. Trigger transition overlay & loader
       document.body.classList.add('is-changing');
@@ -209,9 +209,15 @@
           submitBtn.style.backgroundColor = '#22c55e';
           successMsg.classList.remove('hidden');
           
+          // Change button behavior to reset/refresh the page when "Done" is clicked
+          submitBtn.type = 'button';
+          submitBtn.onclick = function() {
+            location.reload();
+          };
+
           // Remove transition class to slide panels open
           document.body.classList.remove('is-changing');
-          this.reset();
+          form.reset();
         }, 1500);
       })
       .catch(error => {
