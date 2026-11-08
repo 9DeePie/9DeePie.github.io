@@ -5,13 +5,29 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Costco Dashboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Smooth expand/collapse animation for the video container */
+    #video-wrapper {
+      max-height: 0px;
+      opacity: 0;
+      overflow: hidden;
+      transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease-in-out, margin 0.3s ease-in-out;
+      margin-bottom: 0px;
+    }
+
+    #video-wrapper.show {
+      max-height: 60vh;
+      opacity: 1;
+      margin-bottom: 1.5rem; /* space-y equivalent */
+    }
+  </style>
 </head>
 <body class="bg-black text-gray-100 min-h-[100dvh] flex flex-col items-center justify-center p-4 overflow-y-auto">
 
-  <div class="w-full max-w-sm flex flex-col items-center gap-6">
+  <div class="w-full max-w-sm flex flex-col items-center">
 
-    <!-- Video Container -->
-    <div class="w-full aspect-[9/16] max-h-[60vh] rounded-2xl overflow-hidden border border-neutral-800 shadow-lg bg-black">
+    <!-- Pop-up Video Container (Initially hidden and collapsed) -->
+    <div id="video-wrapper" class="w-full aspect-[9/16] rounded-2xl overflow-hidden border border-neutral-800 shadow-lg bg-black">
       <iframe 
         id="costcoVideo"
         class="w-full h-full"
@@ -37,7 +53,8 @@
 
   <script>
     let player;
-    let hasPlayed = false;
+    let hasTriggered = false;
+    const videoWrapper = document.getElementById('video-wrapper');
 
     // Load YouTube iframe API
     function onYouTubeIframeAPIReady() {
@@ -48,33 +65,37 @@
       });
     }
 
-    // Monitor video state to ensure it only plays once
+    // Monitor video state: hide container when it finishes playing
     function onPlayerStateChange(event) {
       // YT.PlayerState.ENDED is 0
       if (event.data === YT.PlayerState.ENDED) {
-        hasPlayed = true;
+        videoWrapper.classList.remove('show');
       }
     }
 
-    // Triggered on the very first click/tap anywhere on the page
-    function handleGlobalTap(e) {
-      if (hasPlayed) return;
-      hasPlayed = true;
+    // Triggered on the very first tap anywhere on the page
+    function handleFirstTap(e) {
+      if (hasTriggered) return;
+      hasTriggered = true;
 
+      // 1. Pop up / expand the video container
+      videoWrapper.classList.add('show');
+
+      // 2. Play video with sound
       if (player && player.playVideo) {
         player.unMute();
         player.setVolume(100);
         player.playVideo();
       }
 
-      // Remove the listeners after the first tap
-      window.removeEventListener('click', handleGlobalTap);
-      window.removeEventListener('touchstart', handleGlobalTap);
+      // Remove global listeners so subsequent taps behave normally (e.g. clicking the link)
+      window.removeEventListener('click', handleFirstTap);
+      window.removeEventListener('touchstart', handleFirstTap);
     }
 
     // Listen for the first tap anywhere on the entire page
-    window.addEventListener('click', handleGlobalTap);
-    window.addEventListener('touchstart', handleGlobalTap);
+    window.addEventListener('click', handleFirstTap);
+    window.addEventListener('touchstart', handleFirstTap);
 
     // Inject YouTube Iframe API Script dynamically
     const tag = document.createElement('script');
