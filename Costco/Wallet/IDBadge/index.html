@@ -203,7 +203,7 @@
     form.addEventListener('submit', function(e) {
       e.preventDefault();
       
-      // Blur any active input so mobile keyboard hides immediately on submit
+      // Hide keyboard immediately on submit
       if (document.activeElement) {
         document.activeElement.blur();
       }
@@ -228,7 +228,7 @@
           submitBtn.innerText = 'Done';
           successMsg.classList.remove('hidden');
           
-          // When "Done" is clicked, reset without full-screen loader and slide form down from the button
+          // Reset behavior when "Done" is clicked
           submitBtn.type = 'button';
           submitBtn.onclick = function() {
             form.reset();
@@ -237,7 +237,6 @@
             
             const fields = document.querySelectorAll('.form-field');
             fields.forEach(el => {
-              el.classList.0 = ''; // clear unnecessary flags
               el.classList.remove('hidden');
               el.classList.add('slide-in-form');
             });
@@ -246,6 +245,11 @@
             submitBtn.style.backgroundColor = '#ff0055';
             submitBtn.type = 'submit';
             submitBtn.onclick = null;
+
+            // Ensure no input field gets focused or triggers the mobile keyboard
+            if (document.activeElement) {
+              document.activeElement.blur();
+            }
 
             // Clean up animation class after it plays
             setTimeout(() => {
