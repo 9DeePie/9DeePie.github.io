@@ -6,21 +6,18 @@
   <title>Costco Dashboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    /* Smooth expand/collapse animation */
+    /* Smooth fade and pop animation for the top video slot */
     #video-wrapper {
-      max-height: 0px;
       opacity: 0;
+      transform: scale(0.95);
       visibility: hidden;
-      overflow: hidden;
-      transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease-in-out, margin 0.3s ease-in-out, visibility 0.3s;
-      margin-bottom: 0px;
+      transition: opacity 0.35s ease-in-out, transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.35s;
     }
 
     #video-wrapper.show {
-      max-height: 384px;
       opacity: 1;
+      transform: scale(1);
       visibility: visible;
-      margin-bottom: 1.5rem;
     }
 
     /* Zoom in and adjust vertical offset to crop top black bar (-16%) */
@@ -32,24 +29,26 @@
     }
   </style>
 </head>
-<body class="bg-black text-gray-100 min-h-[100dvh] flex flex-col items-center justify-center p-4 overflow-y-auto">
+<body class="bg-black text-gray-100 min-h-[100dvh] flex flex-col items-center justify-start p-4 pt-6 overflow-y-auto">
 
-  <div class="w-full max-w-sm flex flex-col items-center">
+  <div class="w-full max-w-sm flex flex-col items-center gap-6">
 
-    <!-- Square Video Container -->
-    <div id="video-wrapper" class="w-full aspect-square rounded-2xl overflow-hidden border border-neutral-800 shadow-lg bg-black relative">
-      <iframe 
-        id="costcoVideo"
-        class="crop-top-video"
-        src="https://www.youtube.com/embed/f4WPnYh1AKk?enablejsapi=1&controls=0&rel=0&modestbranding=1&iv_load_policy=3&playsinline=1" 
-        title="Welcome to Costco" 
-        frameborder="0" 
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-        allowfullscreen
-      ></iframe>
+    <!-- Reserved Top Slot (Keeps buttons locked in place so they never move) -->
+    <div class="w-full aspect-square relative">
+      <div id="video-wrapper" class="absolute inset-0 w-full h-full rounded-2xl overflow-hidden border border-neutral-800 shadow-lg bg-black z-20">
+        <iframe 
+          id="costcoVideo"
+          class="crop-top-video"
+          src="https://www.youtube.com/embed/f4WPnYh1AKk?enablejsapi=1&controls=0&rel=0&modestbranding=1&iv_load_policy=3&playsinline=1" 
+          title="Welcome to Costco" 
+          frameborder="0" 
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+          allowfullscreen
+        ></iframe>
+      </div>
     </div>
 
-    <!-- Clickable Box -->
+    <!-- Clickable Box (Anchored firmly in place) -->
     <a 
       href="https://9deepie.github.io/Costco/Wallet/IDBadge" 
       class="w-full bg-neutral-900 border border-neutral-800 p-6 rounded-2xl text-center hover:border-[#ff0055] transition-all duration-200 shadow-lg active:scale-[0.98] group"
@@ -88,7 +87,7 @@
       if (hasTriggered) return;
       hasTriggered = true;
 
-      // Reveal wrapper
+      // Reveal wrapper at the top
       videoWrapper.classList.add('show');
 
       // Play video with audio
