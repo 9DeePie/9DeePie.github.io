@@ -5,79 +5,49 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UPC-A Barcode Generator</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin-top: 50px;
-            background-color: #f4f6f8;
-        }
-        .container {
-            background: #ffffff;
-            padding: 30px;
-            border-radius: 8px;
-            display: inline-block;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-        input {
-            padding: 10px;
-            font-size: 16px;
-            margin-right: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            width: 200px;
-            text-align: center;
-        }
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
-            background-color: #2ea44f;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #2c974b;
-        }
-        svg {
-            margin-top: 20px;
-            background: #fff;
-            padding: 10px;
-        }
+        body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; background-color: #f4f6f8; }
+        .container { background: #ffffff; padding: 30px; border-radius: 8px; display: inline-block; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        input { padding: 10px; font-size: 16px; margin-right: 10px; border: 1px solid #ccc; border-radius: 4px; width: 220px; text-align: center; }
+        button { padding: 10px 20px; font-size: 16px; background-color: #2ea44f; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background-color: #2c974b; }
+        svg { margin-top: 20px; background: #fff; padding: 10px; display: block; margin-left: auto; margin-right: auto; }
     </style>
 </head>
 <body>
 
     <div class="container">
         <h2>UPC-A Generator</h2>
-        <p>Enter 11 or 12 digits (e.g., <code>036000291452</code>):</p>
+        <p>Enter digits (will auto-pad to 12 digits):</p>
         
-        <input type="text" id="barcodeInput" maxlength="12" value="036000291452">
+        <input type="text" id="barcodeInput" value="036000291452">
         <button onclick="generateBarcode()">Generate</button>
 
-        <br>
-        
         <svg id="barcodeElement"></svg>
     </div>
 
-    <!-- Include JsBarcode from CDN -->
+    <!-- Include JsBarcode CDN -->
     <script src="https://cdn.jsdelivr.net/npm/jsbarcode@11.6.0/dist/JsBarcode.all.min.js"></script>
 
     <script>
         function generateBarcode() {
-            let input = document.getElementById('barcodeInput').value;
+            let input = document.getElementById('barcodeInput').value.replace(/\D/g, ''); // Strip non-numbers
             
-            // Clean input: remove spaces or dashes
-            let cleanInput = input.replace(/[-\s]/g, '');
-            
-            // Validate length and numeric characters
-            if (!/^\d{11,12}$/.test(cleanInput)) {
-                alert("UPC-A must be exactly 11 or 12 numeric digits.");
+            if (input.length === 0) {
+                alert("Please enter numbers.");
                 return;
             }
-            
+
+            // UPC-A expects 11 or 12 digits. Pad shorter strings with leading zeros to prevent crashing.
+            if (input.length < 11) {
+                input = input.padStart(12, '0');
+            } else if (input.length > 12) {
+                input = input.substring(0, 12);
+            }
+
+            document.getElementById('barcodeInput').value = input;
+
             try {
-                JsBarcode("#barcodeElement", cleanInput, {
+                JsBarcode("#barcodeElement", input, {
                     format: "upc",
                     lineColor: "#000",
                     width: 2,
@@ -85,12 +55,12 @@
                     displayValue: true
                 });
             } catch (error) {
-                alert("Invalid input for UPC-A. Please enter valid numeric digits.");
+                alert("Generation error: " + error.message);
                 console.error(error);
             }
         }
 
-        // Generate default barcode on page load
+        // Run automatically on load
         window.onload = generateBarcode;
     </script>
 
