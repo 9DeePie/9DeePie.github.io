@@ -11,14 +11,10 @@
       box-shadow: 0 0 0 2px rgba(255, 0, 85, 0.2) !important;
     }
 
-    /* --- PAGE TRANSITION & LOADER STYLES --- */
+    /* --- PAGE TRANSITION & SUBMIT LOADER --- */
     @keyframes delay {
-      0%, 40%, 100% { 
-        transform: scaleY(0.05);
-      } 
-      20% { 
-        transform: scaleY(1.0);
-      }
+      0%, 40%, 100% { transform: scaleY(0.05); } 
+      20% { transform: scaleY(1.0); }
     }
 
     body {
@@ -93,20 +89,23 @@
     .loader .bar5 { animation-delay: -0.4s; }
     .loader .bar6 { animation-delay: -0.3s; }
 
-    /* --- DROP DOWN ANIMATION FOR BUTTON --- */
-    @keyframes dropDown {
+    /* --- FORM SLIDE-OUT RESET ANIMATION --- */
+    @keyframes slideOutFromButton {
       0% {
         opacity: 0;
-        transform: translateY(-15px);
+        transform: translateY(-20px) scaleY(0.95);
+        max-height: 0px;
       }
       100% {
         opacity: 1;
-        transform: translateY(0);
+        transform: translateY(0) scaleY(1);
+        max-height: 400px;
       }
     }
 
-    .animate-drop {
-      animation: dropDown 0.35s ease-out forwards;
+    .slide-in-form {
+      overflow: hidden;
+      animation: slideOutFromButton 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
   </style>
 </head>
@@ -204,7 +203,7 @@
     form.addEventListener('submit', function(e) {
       e.preventDefault();
       
-      // 1. Trigger transition overlay & loader
+      // 1. Trigger submission page transition loader
       document.body.classList.add('is-changing');
 
       const formData = new FormData(this);
@@ -216,41 +215,39 @@
         mode: 'no-cors'
       })
       .then(() => {
-        // Wait 1.5 seconds for the loader animation, then swap views and slide open
+        // Wait 1.5 seconds for submission loader, then show success view
         setTimeout(() => {
           formTitle.classList.add('hidden');
           document.querySelectorAll('.form-field').forEach(el => el.classList.add('hidden'));
           
           submitBtn.innerText = 'Done';
-          // Keeps original accent color (#ff0055) instead of turning green
           successMsg.classList.remove('hidden');
           
-          // Change button behavior to smoothly slide the transition loader again and reset back to the form
+          // When "Done" is clicked, reset instantly without full-screen loader and slide form down from the button
           submitBtn.type = 'button';
           submitBtn.onclick = function() {
-            document.body.classList.add('is-changing');
+            form.reset();
+            successMsg.classList.add('hidden');
+            formTitle.classList.remove('hidden');
             
-            setTimeout(() => {
-              // Reset form fields and state
-              form.reset();
-              successMsg.classList.add('hidden');
-              formTitle.classList.remove('hidden');
-              document.querySelectorAll('.form-field').forEach(el => el.classList.remove('hidden'));
-              
-              submitBtn.innerText = 'Submit';
-              submitBtn.style.backgroundColor = '#ff0055';
-              submitBtn.type = 'submit';
-              submitBtn.onclick = null;
-              
-              // Apply drop-down animation as form reappears
-              submitBtn.classList.add('animate-drop');
-              setTimeout(() => submitBtn.classList.remove('animate-drop'), 400);
+            const fields = document.querySelectorAll('.form-field');
+            fields.forEach(el => {
+              el.classList.remove('hidden');
+              el.classList.add('slide-in-form');
+            });
+            
+            submitBtn.innerText = 'Submit';
+            submitBtn.style.backgroundColor = '#ff0055';
+            submitBtn.type = 'submit';
+            submitBtn.onclick = null;
 
-              document.body.classList.remove('is-changing');
-            }, 600);
+            // Clean up animation class after it plays
+            setTimeout(() => {
+              fields.forEach(el => el.classList.remove('slide-in-form'));
+            }, 400);
           };
 
-          // Remove transition class to slide panels open
+          // Remove submission transition class
           document.body.classList.remove('is-changing');
         }, 1500);
       })
