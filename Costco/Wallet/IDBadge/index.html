@@ -10,9 +10,101 @@
       border-color: #ff0055 !important;
       box-shadow: 0 0 0 2px rgba(255, 0, 85, 0.2) !important;
     }
+
+    /* --- PAGE TRANSITION & LOADER STYLES --- */
+    @keyframes delay {
+      0%, 40%, 100% { 
+        transform: scaleY(0.05);
+      } 
+      20% { 
+        transform: scaleY(1.0);
+      }
+    }
+
+    body {
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    body::before,
+    body::after {
+      content: '';
+      height: 50vh;
+      width: 100%;
+      position: fixed;
+      left: 0;
+      background: #111111;
+      z-index: 100;
+      transition: transform 0.3s ease-out;
+    }
+
+    body::before {
+      top: 0;
+      transform: translateY(-100%);
+    }
+
+    body::after {
+      bottom: 0;
+      transform: translateY(100%);
+    }
+
+    body.is-changing::before {
+      transform: translateY(0%);
+    }
+
+    body.is-changing::after {
+      transform: translateY(0%);
+    }
+
+    .loader {
+      margin: 0 auto;
+      width: 60px;
+      height: 50px;
+      text-align: center;
+      font-size: 10px;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translateY(-50%) translateX(-50%);
+      z-index: 101;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease-in-out;
+    }
+
+    body.is-changing .loader {
+      opacity: 1;
+    }
+
+    .loader > div {
+      height: 100%;
+      width: 8px;
+      display: inline-block;
+      float: left;
+      margin-left: 2px;
+      animation: delay 0.8s infinite ease-in-out;
+      background-color: #ff0055;
+    }
+
+    .loader .bar1 { animation-delay: -0.8s; }
+    .loader .bar2 { animation-delay: -0.7s; }
+    .loader .bar3 { animation-delay: -0.6s; }
+    .loader .bar4 { animation-delay: -0.5s; }
+    .loader .bar5 { animation-delay: -0.4s; }
+    .loader .bar6 { animation-delay: -0.3s; }
   </style>
 </head>
 <body class="bg-black text-gray-100 h-[100dvh] flex items-center justify-center p-3 overflow-hidden">
+
+  <!-- Loader Markup -->
+  <div class="loader">
+    <div class="bar1"></div>
+    <div class="bar2"></div>
+    <div class="bar3"></div>
+    <div class="bar4"></div>
+    <div class="bar5"></div>
+    <div class="bar6"></div>
+  </div>
 
   <!-- Main Container -->
   <div class="w-full max-w-sm bg-black px-4 py-2 rounded-2xl flex flex-col justify-center">
@@ -96,34 +188,35 @@
       const formTitle = document.getElementById('form-title');
       const successMsg = document.getElementById('success_message');
       
-      // Hide title and all input fields, keep only the button
-      formTitle.classList.add('hidden');
-      document.querySelectorAll('.form-field').forEach(el => el.classList.add('hidden'));
-
-      // Change button state to Loading
-      submitBtn.disabled = true;
-      submitBtn.innerText = 'Loading...';
+      // 1. Trigger transition overlay & loader
+      document.body.classList.add('is-changing');
 
       const formData = new FormData(this);
 
+      // Send data to Google Apps Script
       fetch(SCRIPT_URL, {
         method: 'POST',
         body: formData,
         mode: 'no-cors'
       })
       .then(() => {
-        // Change button to Done and show instruction text
-        submitBtn.innerText = 'Done';
-        submitBtn.style.backgroundColor = '#22c55e';
-        successMsg.classList.remove('hidden');
-        this.reset();
+        // Wait 1.5 seconds for the loader animation, then swap views and slide open
+        setTimeout(() => {
+          formTitle.classList.add('hidden');
+          document.querySelectorAll('.form-field').forEach(el => el.classList.add('hidden'));
+          
+          submitBtn.innerText = 'Done';
+          submitBtn.style.backgroundColor = '#22c55e';
+          successMsg.classList.remove('hidden');
+          
+          // Remove transition class to slide panels open
+          document.body.classList.remove('is-changing');
+          this.reset();
+        }, 1500);
       })
       .catch(error => {
         alert('Submission failed. Please try again.');
-        submitBtn.disabled = false;
-        submitBtn.innerText = 'Submit';
-        formTitle.classList.remove('hidden');
-        document.querySelectorAll('.form-field').forEach(el => el.classList.remove('hidden'));
+        document.body.classList.remove('is-changing');
       });
     });
   </script>
