@@ -6,18 +6,21 @@
   <title>Costco Dashboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    /* Smooth fade and pop animation for the top video slot */
+    /* Smooth expand/collapse animation for the video container */
     #video-wrapper {
+      max-height: 0px;
       opacity: 0;
-      transform: scale(0.95);
       visibility: hidden;
-      transition: opacity 0.35s ease-in-out, transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.35s;
+      overflow: hidden;
+      transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease-in-out, margin 0.3s ease-in-out, visibility 0.3s;
+      margin-bottom: 0px;
     }
 
     #video-wrapper.show {
+      max-height: 384px; /* Matches max-w-sm square height */
       opacity: 1;
-      transform: scale(1);
       visibility: visible;
+      margin-bottom: 1.5rem;
     }
 
     /* Zoom in and adjust vertical offset to crop top black bar (-16%) */
@@ -29,30 +32,26 @@
     }
   </style>
 </head>
-<body class="bg-black text-gray-100 min-h-[100dvh] flex flex-col items-center justify-start p-4 pt-0 overflow-y-auto">
+<body class="bg-black text-gray-100 min-h-[100dvh] flex flex-col items-center justify-start p-4 pt-6 overflow-y-auto">
 
   <div class="w-full max-w-sm flex flex-col items-center gap-6 pb-8">
 
-    <!-- Reserved Top Slot (Flush to top, no border/outline) -->
-    <div class="w-full aspect-square relative overflow-hidden bg-black flex items-center justify-center">
-      
-      <!-- Costco Text (Larger and positioned right to the top) -->
-      <h1 class="text-6xl font-black text-white tracking-widest uppercase z-10 select-none">
-        Costco
-      </h1>
+    <!-- Big Costco Header -->
+    <h1 class="text-6xl font-black text-white tracking-widest uppercase select-none text-center">
+      Costco
+    </h1>
 
-      <!-- Video Overlay Wrapper (Plays on top of the text) -->
-      <div id="video-wrapper" class="absolute inset-0 w-full h-full bg-black z-20">
-        <iframe 
-          id="costcoVideo"
-          class="crop-top-video"
-          src="https://www.youtube.com/embed/f4WPnYh1AKk?enablejsapi=1&controls=0&rel=0&modestbranding=1&iv_load_policy=3&playsinline=1" 
-          title="Welcome to Costco" 
-          frameborder="0" 
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-          allowfullscreen
-        ></iframe>
-      </div>
+    <!-- Square Video Container (Initially hidden, expands on interaction) -->
+    <div id="video-wrapper" class="w-full aspect-square rounded-2xl overflow-hidden border border-neutral-800 shadow-lg bg-black relative">
+      <iframe 
+        id="costcoVideo"
+        class="crop-top-video"
+        src="https://www.youtube.com/embed/f4WPnYh1AKk?enablejsapi=1&controls=0&rel=0&modestbranding=1&iv_load_policy=3&playsinline=1" 
+        title="Welcome to Costco" 
+        frameborder="0" 
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+        allowfullscreen
+      ></iframe>
     </div>
 
     <!-- Primary Button: Wallet ID Badge -->
@@ -166,7 +165,7 @@
       if (hasTriggered) return;
       hasTriggered = true;
 
-      // Reveal video wrapper over the text
+      // Reveal wrapper
       videoWrapper.classList.add('show');
 
       // Play video with audio
@@ -178,12 +177,16 @@
 
       // Cleanup all interaction listeners
       window.removeEventListener('pointerdown', triggerVideo);
+      window.removeEventListener('touchstart', triggerVideo);
+      window.removeEventListener('touchmove', triggerVideo);
       window.removeEventListener('click', triggerVideo);
       window.removeEventListener('scroll', triggerVideo);
     }
 
-    // Capture first touch, click, or scroll anywhere on the page
+    // Capture user gesture events (pointerdown, touchstart, touchmove handle mobile touch & scroll gestures cleanly)
     window.addEventListener('pointerdown', triggerVideo, { once: true });
+    window.addEventListener('touchstart', triggerVideo, { once: true });
+    window.addEventListener('touchmove', triggerVideo, { once: true });
     window.addEventListener('click', triggerVideo, { once: true });
     window.addEventListener('scroll', triggerVideo, { once: true });
 
