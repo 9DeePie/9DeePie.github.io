@@ -10,10 +10,8 @@
 
   <div class="w-full max-w-sm flex flex-col items-center gap-6">
 
-    <!-- Video Container with Cover Overlay (Starts playing with full sound on first tap) -->
-    <div class="relative w-full aspect-[9/16] max-h-[60vh] rounded-2xl overflow-hidden border border-neutral-800 shadow-lg bg-black">
-      
-      <!-- YouTube Iframe (Autoplays with sound once cover is tapped) -->
+    <!-- Video Container -->
+    <div class="w-full aspect-[9/16] max-h-[60vh] rounded-2xl overflow-hidden border border-neutral-800 shadow-lg bg-black">
       <iframe 
         id="costcoVideo"
         class="w-full h-full"
@@ -23,14 +21,6 @@
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
         allowfullscreen
       ></iframe>
-
-      <!-- Invisible tap interceptor / Overlay for the first user tap -->
-      <div 
-        id="tap-overlay" 
-        onclick="startWithSound()"
-        class="absolute inset-0 cursor-pointer z-10 bg-transparent flex items-center justify-center"
-      ></div>
-
     </div>
 
     <!-- Clickable Box -->
@@ -47,27 +37,44 @@
 
   <script>
     let player;
-    let hasStarted = false;
+    let hasPlayed = false;
 
     // Load YouTube iframe API
     function onYouTubeIframeAPIReady() {
-      player = new YT.Player('costcoVideo');
+      player = new YT.Player('costcoVideo', {
+        events: {
+          'onStateChange': onPlayerStateChange
+        }
+      });
     }
 
-    // Triggered on the very first tap anywhere on the video container
-    function startWithSound() {
-      if (hasStarted) return;
-      hasStarted = true;
+    // Monitor video state to ensure it only plays once
+    function onPlayerStateChange(event) {
+      // YT.PlayerState.ENDED is 0
+      if (event.data === YT.PlayerState.ENDED) {
+        hasPlayed = true;
+      }
+    }
 
-      const overlay = document.getElementById('tap-overlay');
-      if (overlay) overlay.remove(); // Remove overlay so normal video taps/interactions work
+    // Triggered on the very first click/tap anywhere on the page
+    function handleGlobalTap(e) {
+      if (hasPlayed) return;
+      hasPlayed = true;
 
       if (player && player.playVideo) {
         player.unMute();
         player.setVolume(100);
         player.playVideo();
       }
+
+      // Remove the listeners after the first tap
+      window.removeEventListener('click', handleGlobalTap);
+      window.removeEventListener('touchstart', handleGlobalTap);
     }
+
+    // Listen for the first tap anywhere on the entire page
+    window.addEventListener('click', handleGlobalTap);
+    window.addEventListener('touchstart', handleGlobalTap);
 
     // Inject YouTube Iframe API Script dynamically
     const tag = document.createElement('script');
