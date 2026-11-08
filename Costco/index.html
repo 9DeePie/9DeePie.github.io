@@ -33,15 +33,15 @@
 
   <div class="w-full max-w-sm flex flex-col items-center gap-6 pb-8">
 
-    <!-- Reserved Top Slot (Holds the "Costco" text underneath, and video plays over it) -->
-    <div class="w-full aspect-square relative rounded-2xl overflow-hidden border border-neutral-800 shadow-lg bg-black flex items-center justify-center">
+    <!-- Interactive Top Video Box (Tapping this box triggers the video) -->
+    <div id="video-container" class="w-full aspect-square relative rounded-2xl overflow-hidden border border-neutral-800 shadow-lg bg-black flex items-center justify-center cursor-pointer select-none">
       
-      <!-- Costco Text (Visible initially and when video finishes) -->
-      <h1 class="text-4xl font-extrabold text-white tracking-widest uppercase z-10 select-none">
+      <!-- Big Costco Text (Visible initially and when video finishes) -->
+      <h1 class="text-6xl font-black text-white tracking-widest uppercase z-10">
         Costco
       </h1>
 
-      <!-- Video Overlay Wrapper (Plays on top of the text) -->
+      <!-- Video Overlay Wrapper (Plays on top of the text when tapped) -->
       <div id="video-wrapper" class="absolute inset-0 w-full h-full bg-black z-20">
         <iframe 
           id="costcoVideo"
@@ -116,31 +116,18 @@
   <script>
     let player;
     let isApiReady = false;
-    let hasTriggered = false;
     let timeCheckInterval = null;
+    const videoContainer = document.getElementById('video-container');
     const videoWrapper = document.getElementById('video-wrapper');
 
     // Load YouTube iframe API
     function onYouTubeIframeAPIReady() {
       player = new YT.Player('costcoVideo', {
         events: {
-          'onReady': () => { 
-            isApiReady = true; 
-            if (hasTriggered) {
-              attemptPlay();
-            }
-          },
+          'onReady': () => { isApiReady = true; },
           'onStateChange': onPlayerStateChange
         }
       });
-    }
-
-    function attemptPlay() {
-      if (player && typeof player.playVideo === 'function') {
-        player.unMute();
-        player.setVolume(100);
-        player.playVideo();
-      }
     }
 
     function onPlayerStateChange(event) {
@@ -151,6 +138,7 @@
               const currentTime = player.getCurrentTime();
               const duration = player.getDuration();
               
+              // Hide 0.5 seconds early
               if (duration > 0 && currentTime >= duration - 0.5) {
                 videoWrapper.classList.remove('show');
                 clearInterval(timeCheckInterval);
@@ -171,22 +159,22 @@
       }
     }
 
-    function triggerVideo(e) {
-      if (hasTriggered) return;
-      hasTriggered = true;
+    function triggerVideo() {
+      // Prevent re-triggering if already showing/playing
+      if (videoWrapper.classList.contains('show')) return;
 
       videoWrapper.classList.add('show');
-      attemptPlay();
 
-      window.removeEventListener('pointerdown', triggerVideo);
-      window.removeEventListener('touchstart', triggerVideo);
-      window.removeEventListener('click', triggerVideo);
+      if (player && typeof player.playVideo === 'function') {
+        player.unMute();
+        player.setVolume(100);
+        player.seekTo(0);
+        player.playVideo();
+      }
     }
 
-    // Tap/Click triggers only (scroll triggers completely removed)
-    window.addEventListener('pointerdown', triggerVideo, { once: true });
-    window.addEventListener('touchstart', triggerVideo, { once: true, passive: true });
-    window.addEventListener('click', triggerVideo, { once: true });
+    // Attach click listener ONLY to the video container box
+    videoContainer.addEventListener('click', triggerVideo);
 
     // Inject YouTube Iframe API Script
     const tag = document.createElement('script');
