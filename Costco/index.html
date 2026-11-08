@@ -10,11 +10,12 @@
 
   <div class="w-full max-w-sm flex flex-col items-center gap-6">
 
-    <!-- Autoplaying Video Container -->
+    <!-- Autoplaying Video Container (Plays Once) -->
     <div class="w-full aspect-[9/16] max-h-[60vh] rounded-2xl overflow-hidden border border-neutral-800 shadow-lg bg-black">
       <iframe 
+        id="costcoVideo"
         class="w-full h-full"
-        src="https://www.youtube.com/embed/f4WPnYh1AKk?autoplay=1&mute=1&loop=1&playlist=f4WPnYh1AKk&controls=0&rel=0&modestbranding=1&iv_load_policy=3" 
+        src="https://www.youtube.com/embed/f4WPnYh1AKk?enablejsapi=1&autoplay=1&mute=1&controls=0&rel=0&modestbranding=1&iv_load_policy=3" 
         title="Welcome to Costco" 
         frameborder="0" 
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
@@ -33,6 +34,39 @@
     </a>
 
   </div>
+
+  <script>
+    // Load YouTube iframe API to control unmuting on first tap
+    let player;
+    function onYouTubeIframeAPIReady() {
+      player = new YT.Player('costcoVideo', {
+        events: {
+          'onReady': onPlayerReady
+        }
+      });
+    }
+
+    function onPlayerReady() {
+      // Unmute on the first touch or tap anywhere on the screen
+      const unmuteHandler = () => {
+        if (player && player.unMute) {
+          player.unMute();
+          player.setVolume(100);
+        }
+        window.removeEventListener('touchstart', unmuteHandler);
+        window.removeEventListener('click', unmuteHandler);
+      };
+
+      window.addEventListener('touchstart', unmuteHandler, { once: true });
+      window.addEventListener('click', unmuteHandler, { once: true });
+    }
+
+    // Inject YouTube Iframe API Script dynamically
+    const tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/iframe_api";
+    const firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+  </script>
 
 </body>
 </html>
