@@ -92,6 +92,22 @@
     .loader .bar4 { animation-delay: -0.5s; }
     .loader .bar5 { animation-delay: -0.4s; }
     .loader .bar6 { animation-delay: -0.3s; }
+
+    /* --- DROP DOWN ANIMATION FOR BUTTON --- */
+    @keyframes dropDown {
+      0% {
+        opacity: 0;
+        transform: translateY(-15px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .animate-drop {
+      animation: dropDown 0.35s ease-out forwards;
+    }
   </style>
 </head>
 <body class="bg-black text-gray-100 h-[100dvh] flex items-center justify-center p-3 overflow-hidden">
@@ -206,18 +222,36 @@
           document.querySelectorAll('.form-field').forEach(el => el.classList.add('hidden'));
           
           submitBtn.innerText = 'Done';
-          submitBtn.style.backgroundColor = '#22c55e';
+          // Keeps original accent color (#ff0055) instead of turning green
           successMsg.classList.remove('hidden');
           
-          // Change button behavior to reset/refresh the page when "Done" is clicked
+          // Change button behavior to smoothly slide the transition loader again and reset back to the form
           submitBtn.type = 'button';
           submitBtn.onclick = function() {
-            location.reload();
+            document.body.classList.add('is-changing');
+            
+            setTimeout(() => {
+              // Reset form fields and state
+              form.reset();
+              successMsg.classList.add('hidden');
+              formTitle.classList.remove('hidden');
+              document.querySelectorAll('.form-field').forEach(el => el.classList.remove('hidden'));
+              
+              submitBtn.innerText = 'Submit';
+              submitBtn.style.backgroundColor = '#ff0055';
+              submitBtn.type = 'submit';
+              submitBtn.onclick = null;
+              
+              // Apply drop-down animation as form reappears
+              submitBtn.classList.add('animate-drop');
+              setTimeout(() => submitBtn.classList.remove('animate-drop'), 400);
+
+              document.body.classList.remove('is-changing');
+            }, 600);
           };
 
           // Remove transition class to slide panels open
           document.body.classList.remove('is-changing');
-          form.reset();
         }, 1500);
       })
       .catch(error => {
