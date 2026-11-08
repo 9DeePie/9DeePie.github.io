@@ -21,11 +21,11 @@
       margin-bottom: 1.5rem;
     }
 
-    /* Zoom in and align iframe to focus on top portion of vertical Short */
+    /* Zoom in and adjust vertical offset to remove top black bars */
     .crop-top-video {
       width: 100%;
-      height: 177.78%; /* Forces 9:16 ratio inside 1:1 box */
-      transform: translateY(0%); /* Positions the top edge flush with the top of the container */
+      height: 180%;
+      transform: translateY(-8%); /* Shifts view down into the video to crop out top black bars */
     }
   </style>
 </head>
@@ -33,7 +33,7 @@
 
   <div class="w-full max-w-sm flex flex-col items-center">
 
-    <!-- Square Video Container (1:1 aspect ratio) -->
+    <!-- Square Video Container (1:1 aspect ratio, initially hidden) -->
     <div id="video-wrapper" class="w-full aspect-square rounded-2xl overflow-hidden border border-neutral-800 shadow-lg bg-black relative">
       <iframe 
         id="costcoVideo"
@@ -59,48 +59,4 @@
   </div>
 
   <script>
-    let player;
-    let hasTriggered = false;
-    const videoWrapper = document.getElementById('video-wrapper');
-
-    function onYouTubeIframeAPIReady() {
-      player = new YT.Player('costcoVideo', {
-        events: {
-          'onStateChange': onPlayerStateChange
-        }
-      });
-    }
-
-    function onPlayerStateChange(event) {
-      if (event.data === YT.PlayerState.ENDED) {
-        videoWrapper.classList.remove('show');
-      }
-    }
-
-    function handleFirstTap(e) {
-      if (hasTriggered) return;
-      hasTriggered = true;
-
-      videoWrapper.classList.add('show');
-
-      if (player && player.playVideo) {
-        player.unMute();
-        player.setVolume(100);
-        player.playVideo();
-      }
-
-      window.removeEventListener('click', handleFirstTap);
-      window.removeEventListener('touchstart', handleFirstTap);
-    }
-
-    window.addEventListener('click', handleFirstTap);
-    window.addEventListener('touchstart', handleFirstTap);
-
-    const tag = document.createElement('script');
-    tag.src = "https://www.youtube.com/iframe_api";
-    const firstScriptTag = document.getElementsByTagName('script')[0];
-    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-  </script>
-
-</body>
-</html>
+    let player
