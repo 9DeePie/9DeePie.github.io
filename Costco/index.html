@@ -33,9 +33,16 @@
 
   <div class="w-full max-w-sm flex flex-col items-center gap-6 pb-8">
 
-    <!-- Reserved Top Slot (Keeps buttons locked in place so they never move) -->
-    <div class="w-full aspect-square relative">
-      <div id="video-wrapper" class="absolute inset-0 w-full h-full rounded-2xl overflow-hidden border border-neutral-800 shadow-lg bg-black z-20">
+    <!-- Reserved Top Slot (Holds the "Costco" text underneath, and video plays over it) -->
+    <div class="w-full aspect-square relative rounded-2xl overflow-hidden border border-neutral-800 shadow-lg bg-black flex items-center justify-center">
+      
+      <!-- Costco Text (Visible initially and when video finishes) -->
+      <h1 class="text-4xl font-extrabold text-white tracking-widest uppercase z-10 select-none">
+        Costco
+      </h1>
+
+      <!-- Video Overlay Wrapper (Plays on top of the text) -->
+      <div id="video-wrapper" class="absolute inset-0 w-full h-full bg-black z-20">
         <iframe 
           id="costcoVideo"
           class="crop-top-video"
@@ -159,7 +166,7 @@
       if (hasTriggered) return;
       hasTriggered = true;
 
-      // Reveal wrapper at the top
+      // Reveal video wrapper over the text
       videoWrapper.classList.add('show');
 
       // Play video with audio
