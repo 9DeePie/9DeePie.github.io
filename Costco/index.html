@@ -80,21 +80,21 @@
     function onPlayerStateChange(event) {
       // When video starts playing (State 1)
       if (event.data === YT.PlayerState.PLAYING) {
-        // Start checking playback time to hide 1 second early
+        // Start checking playback time to hide 0.5 seconds early
         if (!timeCheckInterval) {
           timeCheckInterval = setInterval(() => {
             if (player && typeof player.getCurrentTime === 'function' && typeof player.getDuration === 'function') {
               const currentTime = player.getCurrentTime();
               const duration = player.getDuration();
               
-              // If we are within 1 second of the end, hide early
-              if (duration > 0 && currentTime >= duration - 1.0) {
+              // If we are within 0.5 seconds of the end, hide early
+              if (duration > 0 && currentTime >= duration - 0.5) {
                 videoWrapper.classList.remove('show');
                 clearInterval(timeCheckInterval);
                 timeCheckInterval = null;
               }
             }
-          }, 200); // Check every 200ms
+          }, 100); // Check every 100ms for high precision
         }
       } 
       // Fallback: clear interval if video pauses or ends naturally
