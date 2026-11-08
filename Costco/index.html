@@ -126,7 +126,6 @@
         events: {
           'onReady': () => { 
             isApiReady = true; 
-            // If user already touched/scrolled before API finished loading, play now
             if (hasTriggered) {
               attemptPlay();
             }
@@ -172,28 +171,22 @@
       }
     }
 
-    function triggerVideo() {
+    function triggerVideo(e) {
       if (hasTriggered) return;
       hasTriggered = true;
 
-      // Reveal video wrapper instantly
       videoWrapper.classList.add('show');
-
-      // Attempt playback
       attemptPlay();
 
-      // Cleanup interaction listeners
       window.removeEventListener('pointerdown', triggerVideo);
       window.removeEventListener('touchstart', triggerVideo);
       window.removeEventListener('click', triggerVideo);
-      window.removeEventListener('scroll', triggerVideo);
     }
 
-    // Capture first touch, click, or scroll
+    // Tap/Click triggers only (scroll triggers completely removed)
     window.addEventListener('pointerdown', triggerVideo, { once: true });
     window.addEventListener('touchstart', triggerVideo, { once: true, passive: true });
     window.addEventListener('click', triggerVideo, { once: true });
-    window.addEventListener('scroll', triggerVideo, { once: true });
 
     // Inject YouTube Iframe API Script
     const tag = document.createElement('script');
