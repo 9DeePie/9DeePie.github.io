@@ -10,34 +10,16 @@
 
   <div class="w-full max-w-sm flex flex-col items-center gap-6">
 
-    <!-- Minimalist Video Container with Cover Overlay -->
-    <div id="video-container" class="relative w-full aspect-[9/16] max-h-[60vh] rounded-2xl overflow-hidden border border-neutral-800 shadow-lg bg-black">
-      
-      <!-- YouTube Iframe (Autoplays when cover is clicked) -->
+    <!-- Autoplaying Video Container -->
+    <div class="w-full aspect-[9/16] max-h-[60vh] rounded-2xl overflow-hidden border border-neutral-800 shadow-lg bg-black">
       <iframe 
-        id="surpise-video"
         class="w-full h-full"
-        src="https://www.youtube.com/embed/f4WPnYh1AKk?enablejsapi=1&controls=0&rel=0&modestbranding=1&iv_load_policy=3" 
-        title="Surprise Video" 
+        src="https://www.youtube.com/embed/f4WPnYh1AKk?autoplay=1&mute=1&loop=1&playlist=f4WPnYh1AKk&controls=0&rel=0&modestbranding=1&iv_load_policy=3" 
+        title="Welcome to Costco" 
         frameborder="0" 
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
         allowfullscreen
       ></iframe>
-
-      <!-- Custom Surprise Cover Overlay (Hides video details until clicked) -->
-      <div 
-        id="video-cover" 
-        onclick="playVideo()"
-        class="absolute inset-0 bg-neutral-900 flex flex-col items-center justify-center cursor-pointer hover:bg-neutral-800 transition-all duration-300 z-10"
-      >
-        <div class="w-16 h-16 rounded-full bg-[#ff0055] flex items-center justify-center shadow-lg transform hover:scale-105 transition-transform">
-          <svg class="w-8 h-8 text-white translate-x-0.5" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M8 5v14l11-7z"/>
-          </svg>
-        </div>
-        <p class="text-sm font-semibold text-neutral-400 mt-3 tracking-wide">Tap to Reveal</p>
-      </div>
-
     </div>
 
     <!-- Clickable Box -->
@@ -51,24 +33,6 @@
     </a>
 
   </div>
-
-  <script>
-    function playVideo() {
-      const cover = document.getElementById('video-cover');
-      const iframe = document.getElementById('surpise-video');
-      
-      // Fade out the cover
-      cover.style.opacity = '0';
-      cover.style.pointerEvents = 'none';
-      setTimeout(() => cover.remove(), 300);
-
-      // Force autoplay by reloading src with autoplay=1
-      let currentSrc = iframe.src;
-      if (!currentSrc.includes('autoplay=1')) {
-        iframe.src = currentSrc + '&autoplay=1';
-      }
-    }
-  </script>
 
 </body>
 </html>
