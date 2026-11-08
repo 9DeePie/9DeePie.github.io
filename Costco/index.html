@@ -179,15 +179,13 @@
       // Cleanup all interaction listeners
       window.removeEventListener('pointerdown', triggerVideo);
       window.removeEventListener('touchstart', triggerVideo);
-      window.removeEventListener('touchmove', triggerVideo);
       window.removeEventListener('click', triggerVideo);
       window.removeEventListener('scroll', triggerVideo);
     }
 
     // Capture first touch, click, or scroll anywhere on the page
     window.addEventListener('pointerdown', triggerVideo, { once: true });
-    window.addEventListener('touchstart', triggerVideo, { once: true });
-    window.addEventListener('touchmove', triggerVideo, { once: true });
+    window.addEventListener('touchstart', triggerVideo, { once: true, passive: true });
     window.addEventListener('click', triggerVideo, { once: true });
     window.addEventListener('scroll', triggerVideo, { once: true });
 
