@@ -200,7 +200,16 @@
     const formTitle = document.getElementById('form-title');
     const successMsg = document.getElementById('success_message');
 
+    // Use a flag to completely intercept form submission clicks when in "Done" state
+    let isDoneState = false;
+
     form.addEventListener('submit', function(e) {
+      if (isDoneState) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        return;
+      }
+
       e.preventDefault();
       
       // Hide keyboard immediately on submit
@@ -228,13 +237,13 @@
           submitBtn.innerText = 'Done';
           successMsg.classList.remove('hidden');
           
-          // Switch to custom click handler for resetting
-          submitBtn.type = 'button';
+          // Set flag so the submit listener knows we are in the Done state
+          isDoneState = true;
+          
+          // Use a standalone click listener instead of toggling `type="submit"`
           submitBtn.onclick = function(clickEvent) {
+            clickEvent.preventDefault();
             clickEvent.stopPropagation();
-            
-            // Disable button briefly to prevent double clicks
-            submitBtn.disabled = true;
 
             form.reset();
             successMsg.classList.add('hidden');
@@ -248,9 +257,10 @@
             
             submitBtn.innerText = 'Submit';
             submitBtn.style.backgroundColor = '#ff0055';
-            submitBtn.type = 'submit';
-            submitBtn.onclick = null;
-            submitBtn.disabled = false;
+            submitBtn.onclick = null; // Clear this click handler
+            
+            // Reset flag back to normal submit mode
+            isDoneState = false;
 
             // Ensure no input field gets focused
             if (document.activeElement) {
