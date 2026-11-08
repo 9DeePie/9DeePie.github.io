@@ -176,14 +176,16 @@
         player.playVideo();
       }
 
-      // Cleanup listeners
+      // Cleanup all interaction listeners
       window.removeEventListener('pointerdown', triggerVideo);
       window.removeEventListener('click', triggerVideo);
+      window.removeEventListener('scroll', triggerVideo);
     }
 
-    // Capture first touch or click anywhere
+    // Capture first touch, click, or scroll anywhere on the page
     window.addEventListener('pointerdown', triggerVideo, { once: true });
     window.addEventListener('click', triggerVideo, { once: true });
+    window.addEventListener('scroll', triggerVideo, { once: true });
 
     // Inject YouTube Iframe API Script
     const tag = document.createElement('script');
