@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UPC-A Barcode Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        .container {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            display: inline-block;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        input {
+            padding: 8px;
+            font-size: 16px;
+            margin-right: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            padding: 8px 16px;
+            font-size: 16px;
+            background-color: #2ea44f;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #2c974b;
+        }
+        svg {
+            margin-top: 20px;
+            background: #fff;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>UPC-A Generator</h2>
+        <p>Enter 11 or 12 digits for your UPC-A code:</p>
+        
+        <!-- Input field for dynamic generation -->
+        <input type="text" id="barcodeInput" maxlength="12" value="012345678905">
+        <button onclick="generateBarcode()">Generate</button>
+
+        <br>
+        
+        <!-- The SVG element where the barcode will be rendered -->
+        <svg id="barcodeElement"></svg>
+    </div>
+
+    <!-- Include JsBarcode from a fast CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@11.6.0/dist/barcodes/JsBarcode.code128.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@11.6.0/dist/JsBarcode.all.min.js"></script>
+
+    <script>
+        function generateBarcode() {
+            const inputValue = document.getElementById('barcodeInput').value;
+            
+            try {
+                // Generate UPC-A barcode dynamically
+                JsBarcode("#barcodeElement", inputValue, {
+                    format: "upc",
+                    lineColor: "#000",
+                    width: 2,
+                    height: 100,
+                    displayValue: true
+                });
+            } catch (error) {
+                alert("Invalid input for UPC-A. Please enter numeric digits.");
+                console.error(error);
+            }
+        }
+
+        // Generate default barcode on page load
+        window.onload = generateBarcode;
+    </script>
+
+</body>
+</html>
