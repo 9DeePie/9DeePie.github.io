@@ -124,33 +124,43 @@
     function onYouTubeIframeAPIReady() {
       player = new YT.Player('costcoVideo', {
         events: {
-          'onReady': () => { isApiReady = true; },
+          'onReady': () => { 
+            isApiReady = true; 
+            // If user already touched/scrolled before API finished loading, play now
+            if (hasTriggered) {
+              attemptPlay();
+            }
+          },
           'onStateChange': onPlayerStateChange
         }
       });
     }
 
+    function attemptPlay() {
+      if (player && typeof player.playVideo === 'function') {
+        player.unMute();
+        player.setVolume(100);
+        player.playVideo();
+      }
+    }
+
     function onPlayerStateChange(event) {
-      // When video starts playing (State 1)
       if (event.data === YT.PlayerState.PLAYING) {
-        // Start checking playback time to hide 0.5 seconds early
         if (!timeCheckInterval) {
           timeCheckInterval = setInterval(() => {
             if (player && typeof player.getCurrentTime === 'function' && typeof player.getDuration === 'function') {
               const currentTime = player.getCurrentTime();
               const duration = player.getDuration();
               
-              // If we are within 0.5 seconds of the end, hide early
               if (duration > 0 && currentTime >= duration - 0.5) {
                 videoWrapper.classList.remove('show');
                 clearInterval(timeCheckInterval);
                 timeCheckInterval = null;
               }
             }
-          }, 100); // Check every 100ms for high precision
+          }, 100);
         }
       } 
-      // Fallback: clear interval if video pauses or ends naturally
       else if (event.data === YT.PlayerState.ENDED || event.data === YT.PlayerState.PAUSED) {
         if (timeCheckInterval) {
           clearInterval(timeCheckInterval);
@@ -166,24 +176,20 @@
       if (hasTriggered) return;
       hasTriggered = true;
 
-      // Reveal video wrapper over the text
+      // Reveal video wrapper instantly
       videoWrapper.classList.add('show');
 
-      // Play video with audio
-      if (player && typeof player.playVideo === 'function') {
-        player.unMute();
-        player.setVolume(100);
-        player.playVideo();
-      }
+      // Attempt playback
+      attemptPlay();
 
-      // Cleanup all interaction listeners
+      // Cleanup interaction listeners
       window.removeEventListener('pointerdown', triggerVideo);
       window.removeEventListener('touchstart', triggerVideo);
       window.removeEventListener('click', triggerVideo);
       window.removeEventListener('scroll', triggerVideo);
     }
 
-    // Capture first touch, click, or scroll anywhere on the page
+    // Capture first touch, click, or scroll
     window.addEventListener('pointerdown', triggerVideo, { once: true });
     window.addEventListener('touchstart', triggerVideo, { once: true, passive: true });
     window.addEventListener('click', triggerVideo, { once: true });
