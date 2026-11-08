@@ -27,14 +27,21 @@
       transform: translateY(-16%);
       pointer-events: none; /* Prevents touch interference on iframe */
     }
+
+    /* Temporarily block clicks while loading */
+    .loading-lock {
+      pointer-events: none;
+      opacity: 0.8;
+      cursor: not-allowed;
+    }
   </style>
 </head>
 <body class="bg-black text-gray-100 min-h-[100dvh] flex flex-col items-center justify-start p-4 pt-6 overflow-y-auto">
 
   <div class="w-full max-w-sm flex flex-col items-center gap-6 pb-8">
 
-    <!-- Interactive Top Video Box (Tapping this box triggers the video) -->
-    <div id="video-container" class="w-full aspect-square relative rounded-2xl overflow-hidden border border-neutral-800 shadow-lg bg-black flex items-center justify-center cursor-pointer select-none">
+    <!-- Interactive Top Video Box (Locked for 1 second on load to prevent black-screen glitch) -->
+    <div id="video-container" class="w-full aspect-square relative rounded-2xl overflow-hidden border border-neutral-800 shadow-lg bg-black flex items-center justify-center cursor-pointer select-none loading-lock transition-opacity duration-300">
       
       <!-- Big Costco Text (Visible initially and when video finishes) -->
       <h1 class="text-6xl font-black text-white tracking-widest uppercase z-10">
@@ -120,6 +127,11 @@
     const videoContainer = document.getElementById('video-container');
     const videoWrapper = document.getElementById('video-wrapper');
 
+    // Unlock the container after 1 second to allow the YouTube iframe to fully initialize
+    setTimeout(() => {
+      videoContainer.classList.remove('loading-lock');
+    }, 1000);
+
     // Load YouTube iframe API
     function onYouTubeIframeAPIReady() {
       player = new YT.Player('costcoVideo', {
@@ -160,8 +172,8 @@
     }
 
     function triggerVideo() {
-      // Prevent re-triggering if already showing/playing
-      if (videoWrapper.classList.contains('show')) return;
+      // Prevent re-triggering if already showing/playing or still locked
+      if (videoContainer.classList.contains('loading-lock') || videoWrapper.classList.contains('show')) return;
 
       videoWrapper.classList.add('show');
 
@@ -173,7 +185,7 @@
       }
     }
 
-    // Attach click listener ONLY to the video container box
+    // Attach click listener to the video container box
     videoContainer.addEventListener('click', triggerVideo);
 
     // Inject YouTube Iframe API Script
